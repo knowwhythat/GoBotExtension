@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "GoBotExtension",
+  "description": "GoBot的浏览器插件",
+  "version": "1.0.0",
+  "icons": {
+    "16": "src/icons/128x128.png",
+    "48": "src/icons/128x128.png",
+    "128": "src/icons/128x128.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["src/content-scripts/index.js"],
+      "matches": ["http://*/*", "https://*/*", "file://*/*"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "src/background/index.js"
+  },
+  "permissions": ["'nativeMessaging", "storage"]
+}

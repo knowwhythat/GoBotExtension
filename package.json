@@ -1,0 +1,26 @@
+{
+  "name": "gobot-extension",
+  "displayName": "GoBotExtension",
+  "description": "Chrome extension for GoBot to extract html element selector",
+  "private": true,
+  "version": "0.0.3",
+  "author": "mancelee@gmail.com",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "release": "cbump --tag --commit && vite build"
+  },
+  "dependencies": {
+    "vue": "^3.2.37",
+    "webextension-polyfill": "^0.10.0"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^1.0.13",
+    "@types/chrome": "^0.0.193",
+    "@vitejs/plugin-vue": "^2.3.2",
+    "crx-bump": "^0.0.4",
+    "rollup": "^2.77.3",
+    "rollup-plugin-zip": "^1.0.3",
+    "vite": "^2.9.14"
+  }
+}
