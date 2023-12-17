@@ -11,7 +11,7 @@
     "release": "cbump --tag --commit && vite build"
   },
   "dependencies": {
-    "vue": "^3.2.37",
+    "css-selector-generator": "^3.6.6",
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
@@ -21,6 +21,6 @@
     "crx-bump": "^0.0.4",
     "rollup": "^2.77.3",
     "rollup-plugin-zip": "^1.0.3",
-    "vite": "^2.9.14"
+    "vite": "^2.9.0"
   }
 }
