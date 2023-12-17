@@ -3,10 +3,12 @@ import { getCssSelector } from "css-selector-generator";
 
 var prev = void 0;
 var record = false;
+var id = "";
 browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   console.log("[test]" + message.message);
 
   if (message.message == "start") {
+    id = message.id;
     deepAddStyle(window);
     deepAddListener(window);
   }
@@ -30,6 +32,7 @@ browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
   //高亮元素
   if (message.message == "highlight") {
+    id = message.id;
     highlightElement(message.frame, message.xpath);
   }
 });
@@ -49,14 +52,16 @@ var highlightElement = function (frame, xpath) {
     setTimeout(function () {
       element.className = element.className.replace(/\s?\bhighlight\b/, "");
       browser.runtime.sendMessage({
+        id: id,
         type: "highlight",
-        message: element.length,
+        message: "ok",
       });
     }, 2000);
   } else {
     browser.runtime.sendMessage({
+      id: id,
       type: "highlight",
-      message: "0",
+      message: "error",
     });
   }
 };
@@ -111,7 +116,7 @@ var mousedown_event = function (event) {
 
   var JsonData = MakeJson(target, event);
 
-  browser.runtime.sendMessage({ type: "click", message: JsonData });
+  browser.runtime.sendMessage({ type: "click", id: id, message: JsonData });
 
   //采集情况下终止监听
   if (!record) {
@@ -212,6 +217,7 @@ var change_event = function (event) {
   target.className = target.className.replace(/\s?\bhighlight\b/, "");
 
   browser.runtime.sendMessage({
+    id: id,
     type: "text",
     message: MakeJson(target, event),
   });
@@ -226,6 +232,7 @@ var onsubmit_event = function (event) {
   target.className = target.className.replace(/\s?\bhighlight\b/, "");
 
   browser.runtime.sendMessage({
+    id: id,
     type: "form",
     message: MakeJson(target, event),
   });
@@ -270,7 +277,7 @@ function getElementXPath(element) {
 
 function getElementPath(element) {
   var paths = [];
-  paths.push(makePathByAttribute(element));
+  paths.push(...makePathByAttribute(element));
   try {
     var selector = getCssSelector(element);
     paths.push(selector);
@@ -285,7 +292,7 @@ var getFramePath = function (element) {
 
   var paths = [];
   if (win != win.parent) {
-    paths.push(makePathByAttribute(win.frameElement));
+    paths.push(...makePathByAttribute(win.frameElement));
     var fullPath = getElementXPath(win.frameElement);
     paths.push(fullPath);
   }

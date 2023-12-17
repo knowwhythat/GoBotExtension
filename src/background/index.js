@@ -23,7 +23,7 @@ var nativeMessageConn = (function () {
   }
 
   function onNativeMessage(message) {
-    //console.log('recieved message from native app: ' + JSON.stringify(message));
+    // console.log("recieved message from native app: " + JSON.stringify(message));
 
     sendMsgToContent(message, (response) => {
       if (response) console.log(response);
