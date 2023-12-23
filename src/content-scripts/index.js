@@ -24,7 +24,7 @@ browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.message == "stop") {
     deepRemoveListener(window);
     if (prev) {
-      prev.className = prev.className.replace(/\s?\bhighlight\b/, "");
+      prev.className = prev.className.replace(/\s?\bgobothighlight\b/, "");
       prev = void 0;
     }
     record = false;
@@ -48,9 +48,12 @@ var highlightElement = function (frame, xpath) {
     var element = win.document.querySelector(xpath);
   }
   if (element) {
-    element.className += " highlight";
+    element.className += " gobothighlight";
     setTimeout(function () {
-      element.className = element.className.replace(/\s?\bhighlight\b/, "");
+      element.className = element.className.replace(
+        /\s?\bgobothighlight\b/,
+        ""
+      );
       browser.runtime.sendMessage({
         id: id,
         type: "highlight",
@@ -100,19 +103,19 @@ var mouseover_event = function (event) {
     return;
   }
   if (prev) {
-    prev.className = prev.className.replace(/\s?\bhighlight\b/, "");
+    prev.className = prev.className.replace(/\s?\bgobothighlight\b/, "");
     prev = void 0;
   }
 
   if (event.target) {
     prev = event.target;
-    prev.className += " highlight";
+    prev.className += " gobothighlight";
   }
 };
 
 var mousedown_event = function (event) {
   var target = "target" in event ? event.target : event.srcElement;
-  target.className = target.className.replace(/\s?\bhighlight\b/, "");
+  target.className = target.className.replace(/\s?\bgobothighlight\b/, "");
 
   var JsonData = MakeJson(target, event);
 
@@ -144,7 +147,7 @@ var deepAddStyle = function (win) {
   try {
     addStyle(
       win.document,
-      ".highlight { background:#ffcccc !important;outline:2px dashed #6366f1 !important;transition: all 0.15s linear}"
+      ".gobothighlight { background:#ffcccc !important;outline:2px dashed #6366f1 !important;transition: all 0.15s linear}"
     );
   } catch (err) {
     console.log("[UERPA Err] : " + err);
@@ -214,7 +217,7 @@ var deepRemoveListener = function (win) {
 //文本变更处理
 var change_event = function (event) {
   var target = "target" in event ? event.target : event.srcElement;
-  target.className = target.className.replace(/\s?\bhighlight\b/, "");
+  target.className = target.className.replace(/\s?\bgobothighlight\b/, "");
 
   browser.runtime.sendMessage({
     id: id,
@@ -229,7 +232,7 @@ var change_event = function (event) {
 //表单提交事件处理
 var onsubmit_event = function (event) {
   var target = "target" in event ? event.target : event.srcElement;
-  target.className = target.className.replace(/\s?\bhighlight\b/, "");
+  target.className = target.className.replace(/\s?\bgobothighlight\b/, "");
 
   browser.runtime.sendMessage({
     id: id,
