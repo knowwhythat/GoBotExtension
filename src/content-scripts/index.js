@@ -43,17 +43,21 @@ var highlightElement = function (frame, xpath) {
     win = getElementByXpath(frame, win.document).contentWindow;
   }
   if (isXPath(xpath)) {
-    var element = getElementByXpath(xpath, win.document);
+    var elements = getElementByXpath(xpath, win.document);
   } else {
-    var element = win.document.querySelector(xpath);
+    var elements = win.document.querySelectorAll(xpath);
   }
-  if (element) {
-    element.className += " gobothighlight";
+  if (elements.length > 0) {
+    elements.forEach((element) => {
+      element.className += " gobothighlight";
+    });
     setTimeout(function () {
-      element.className = element.className.replace(
-        /\s?\bgobothighlight\b/,
-        ""
-      );
+      elements.forEach((element) => {
+        element.className = element.className.replace(
+          /\s?\bgobothighlight\b/,
+          ""
+        );
+      });
       browser.runtime.sendMessage({
         id: id,
         type: "highlight",
@@ -70,13 +74,20 @@ var highlightElement = function (frame, xpath) {
 };
 
 var getElementByXpath = function (path, document) {
-  return document.evaluate(
+  const result = document.evaluate(
     path,
     document,
     null,
-    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    XPathResult.ANY_TYPE,
     null
-  ).singleNodeValue;
+  );
+  var elements = [];
+  var element = result.iterateNext();
+  while (element) {
+    elements.push(element);
+    element = result.iterateNext();
+  }
+  return elements;
 };
 
 function isXPath(str) {
