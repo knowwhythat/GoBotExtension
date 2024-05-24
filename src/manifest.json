@@ -10,13 +10,34 @@
   },
   "content_scripts": [
     {
+      "all_frames": true,
       "js": ["src/content-scripts/index.js"],
-      "matches": ["http://*/*", "https://*/*", "file://*/*"],
-      "run_at": "document_idle"
+      "match_about_blank": true,
+      "matches": [
+        "http://*/*",
+        "https://*/*",
+        "ftp://*/*",
+        "file://*/*"
+      ],
+      "run_at": "document_start"
     }
   ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
   "background": {
     "service_worker": "src/background/index.js"
   },
-  "permissions": ["nativeMessaging", "storage"]
+  "permissions": [
+    "cookies",
+    "management",
+    "tabs",
+    "debugger",
+    "nativeMessaging",
+    "webNavigation",
+    "downloads",
+    "clipboardRead",
+    "clipboardWrite",
+    "scripting"
+  ]
 }
