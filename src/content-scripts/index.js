@@ -1,9 +1,9 @@
 import browser from "webextension-polyfill";
 import {getCssSelector} from "css-selector-generator";
 
-var prev = void 0;
-var record = false;
-var id = "";
+let prev = void 0;
+let record = false;
+let id = "";
 browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     console.log("[test]" + message.message);
 
@@ -41,7 +41,7 @@ const highlightElement = function (frame, xpath) {
     let elements;
     let win = window;
     if (frame && frame !== "") {
-        win = getElementByXpath(frame, win.document).contentWindow;
+        win = getElementByXpath(frame, win.document)[0].contentWindow;
     }
     if (isXPath(xpath)) {
         elements = getElementByXpath(xpath, win.document);
@@ -125,11 +125,24 @@ const mouseover_event = function (event) {
     }
 };
 
+
+//消息统一格式
+const MakeJson = function (target, event) {
+    //frame结构路径
+    const framePaths = getFramePath(target);
+    const elementPaths = getElementPath(target);
+
+    return {
+        framePath: framePaths,
+        elementPath: elementPaths,
+    };
+};
+
 const mousedown_event = function (event) {
-    var target = "target" in event ? event.target : event.srcElement;
+    const target = "target" in event ? event.target : event.srcElement;
     target.className = target.className.replace(/\s?\bgobothighlight\b/, "");
 
-    var JsonData = MakeJson(target, event);
+    const JsonData = MakeJson(target, event);
 
     browser.runtime.sendMessage({type: "click", id: id, message: JsonData});
 
@@ -140,17 +153,22 @@ const mousedown_event = function (event) {
 };
 
 String.prototype.trimEnd = function (c) {
+    let i;
+    let rg;
+    let str;
     if (c == null || c === "") {
-        var str = this;
-        var rg = /s/;
-        var i = str.length;
-        while (rg.test(str.charAt(--i))) ;
+        str = this;
+        rg = /s/;
+        i = str.length;
+        while (rg.test(str.charAt(--i))) {
+        }
         return str.slice(0, i + 1);
     } else {
-        var str = this;
-        var rg = new RegExp(c);
-        var i = str.length;
-        while (rg.test(str.charAt(--i))) ;
+        str = this;
+        rg = new RegExp(c);
+        i = str.length;
+        while (rg.test(str.charAt(--i))) {
+        }
         return str.slice(0, i + 1);
     }
 };
@@ -230,7 +248,7 @@ const deepRemoveListener = function (win) {
 
 //文本变更处理
 const change_event = function (event) {
-    var target = "target" in event ? event.target : event.srcElement;
+    const target = "target" in event ? event.target : event.srcElement;
     target.className = target.className.replace(/\s?\bgobothighlight\b/, "");
 
     browser.runtime.sendMessage({
@@ -245,7 +263,7 @@ const change_event = function (event) {
 
 //表单提交事件处理
 const onsubmit_event = function (event) {
-    var target = "target" in event ? event.target : event.srcElement;
+    const target = "target" in event ? event.target : event.srcElement;
     target.className = target.className.replace(/\s?\bgobothighlight\b/, "");
 
     browser.runtime.sendMessage({
@@ -293,25 +311,25 @@ function getElementXPath(element) {
 }
 
 function getElementPath(element) {
-    var paths = [];
+    const paths = [];
     paths.push(...makePathByAttribute(element));
     try {
-        var selector = getCssSelector(element);
+        const selector = getCssSelector(element);
         paths.push(selector);
     } catch (e) {
     }
-    var fullPath = getElementXPath(element);
+    const fullPath = getElementXPath(element);
     paths.push(fullPath);
     return paths;
 }
 
-var getFramePath = function (element) {
-    var win = element.ownerDocument.defaultView;
+const getFramePath = function (element) {
+    const win = element.ownerDocument.defaultView;
 
-    var paths = [];
+    const paths = [];
     if (win !== win.parent) {
         paths.push(...makePathByAttribute(win.frameElement));
-        var fullPath = getElementXPath(win.frameElement);
+        const fullPath = getElementXPath(win.frameElement);
         paths.push(fullPath);
     }
 
@@ -319,9 +337,9 @@ var getFramePath = function (element) {
 };
 
 function makePathByAttribute(element) {
-    var list = [];
-    var text = "//" + element.tagName.toLowerCase();
-    var attributeNames = element.getAttributeNames();
+    const list = [];
+    const text = "//" + element.tagName.toLowerCase();
+    const attributeNames = element.getAttributeNames();
     if (attributeNames.length === 0) {
         list.push(text);
     }
@@ -335,18 +353,6 @@ function makePathByAttribute(element) {
     }
     return list;
 }
-
-//消息统一格式
-var MakeJson = function (target, event) {
-    //frame结构路径
-    var framePaths = getFramePath(target);
-    var elementPaths = getElementPath(target);
-
-    return {
-        framePath: framePaths,
-        elementPath: elementPaths,
-    };
-};
 
 deepAddStyle(window);
 console.log("loaded");
