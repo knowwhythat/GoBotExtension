@@ -38,6 +38,7 @@
     "downloads",
     "clipboardRead",
     "clipboardWrite",
-    "scripting"
+    "scripting",
+    "storage"
   ]
 }
