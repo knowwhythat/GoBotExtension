@@ -50,7 +50,7 @@ const makeQueryForElement = (el, toShort = false, batch = false) => {
     try {
       const nodes = getElementByXpath(
         "//" + component,
-        el.ownerDocument.defaultView
+        el.ownerDocument.defaultView.document
       );
       if (toShort && nodes.length === 1) {
         query = "//" + component + query;
