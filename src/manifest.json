@@ -10,15 +10,10 @@
   },
   "content_scripts": [
     {
-      "all_frames": true,
+      "all_frames": false,
       "js": ["src/content-scripts/index.js"],
       "match_about_blank": true,
-      "matches": [
-        "http://*/*",
-        "https://*/*",
-        "ftp://*/*",
-        "file://*/*"
-      ],
+      "matches": ["http://*/*", "https://*/*", "ftp://*/*", "file://*/*"],
       "run_at": "document_start"
     }
   ],
